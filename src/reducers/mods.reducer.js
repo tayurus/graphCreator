@@ -9,7 +9,7 @@ export const modsReducer = (state = initialState, action) => {
       return {
         mode: action.mode
       }
-      break;
+
     default:
       return state;
   }

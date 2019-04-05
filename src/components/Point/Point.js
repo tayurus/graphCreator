@@ -3,12 +3,12 @@ import React from 'react';
 
 export const Point = props => {
 
-  const { point } = props;
+  const { point, onClick } = props;
 
   return (
     <React.Fragment>
-      <circle cx={point.x} cy={point.y} r='25' fill='none' stroke="tomato" stroke-width='2'/>
-      <text x={point.x - 5} y={point.y + 5} stroke="red" stroke-width='2'>{point.text}</text>
+      <circle data-text={point.text} onClick={onClick} cx={point.x} cy={point.y} r='25' fill='#ccc' stroke="tomato" strokeWidth='2'/>
+      <text data-text={point.text} onClick={onClick} x={point.x - 5} y={point.y + 5} stroke="red" strokeWidth='2'>{point.text}</text>
     </React.Fragment>
   )
 }

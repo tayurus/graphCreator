@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Point } from './components';
+import { Button, Point, AdjacencyMatrix } from './components';
 import './App.css';
 
 class App extends Component {
@@ -9,24 +9,37 @@ class App extends Component {
     super(props);
 
     this.handleFieldClick = this.handleFieldClick.bind(this);
+    this.handlePointClick = this.handlePointClick.bind(this);
   }
 
   handleFieldClick(e) {
-    const { dispatch } = this.props;
+    const { dispatch, mode } = this.props;
 
-    var rect = e.target.getBoundingClientRect();
-    var x = e.clientX - rect.left; //x position within the element.
-    var y = e.clientY - rect.top;  //y position within the element.
-    const newPoint = {
-      x, y
+    if (mode === 'createPoint') {
+      var rect = e.target.getBoundingClientRect();
+      var x = e.clientX - rect.left; //x position within the element.
+      var y = e.clientY - rect.top;  //y position within the element.
+      const newPoint = {
+        x, y
+      }
+
+      dispatch({type: 'newPoint', newPoint});
     }
+  }
 
-    dispatch({type: 'newPoint', newPoint});
+  handlePointClick(e) {
+    e.stopPropagation();
+
+    const { mode, dispatch } = this.props;
+
+    if (mode === 'connectPoints') {
+      dispatch({type: 'selectPoint', pointText: parseInt(e.target.getAttribute('data-text'))});
+    }
   }
 
   render() {
-
-    const { mode, dispatch, points } = this.props;
+    console.log('suka');
+    const { mode, dispatch, points, adjacencyMatrix } = this.props;
     return (
       <div className="App">
 
@@ -42,11 +55,19 @@ class App extends Component {
                   className={mode === 'connectPoints' ? 'button_active' : ''}/>
         </div>
 
-        <svg className="App__field" onClickCapture ={(e) => this.handleFieldClick(e)}>
+        <div className="App__row">
 
-          {points.map( point => <Point  point={point}/>)}
+          <svg className="App__field" onClick={(e) => this.handleFieldClick(e)}>
+            {points.map( (point, pointKey) => <Point key={pointKey} onClick={this.handlePointClick}
+                                         point={point}/>)}
+          </svg>
 
-        </svg>
+
+          <AdjacencyMatrix matrix={adjacencyMatrix}/>
+
+        </div>
+
+
 
       </div>
     );
@@ -56,8 +77,9 @@ class App extends Component {
 
 function mapStateToProps(state) {
   const { mode } = state.modsReducer;
-  const { points } = state.pointsReducer;
-  return {mode, points};
+  const { points, adjacencyMatrix } = state.pointsReducer;
+
+  return {mode, points, adjacencyMatrix};
 }
 
 const connectedApp = connect(mapStateToProps, null)(App);
