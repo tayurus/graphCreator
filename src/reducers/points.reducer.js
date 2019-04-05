@@ -17,7 +17,7 @@ export const pointsReducer = (state = initialState, action) => {
              }
 
     case 'selectPoint':
-      let newSelectedPoints = JSON.parse(JSON.stringify(state.selectedPoints));
+      let newSelectedPoints = [...state.selectedPoints];
       newSelectedPoints.push(action.pointText);
 
       if (newSelectedPoints.length === 2) {

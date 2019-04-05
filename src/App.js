@@ -37,6 +37,26 @@ class App extends Component {
     }
   }
 
+  drawLines(points, adjacencyMatrix){
+
+    let connectedPointsPairs = [];
+
+    adjacencyMatrix.forEach( (row, rowIndex) => {
+      row.forEach( (col, colIndex) => {
+        if (col === 1 && colIndex !== rowIndex) {
+          connectedPointsPairs.push([points[colIndex], points[rowIndex]]);
+        }
+      })
+    })
+
+    return connectedPointsPairs.map( pair => (<line stroke="red"
+                                                    stroke-width="2"
+                                                    x1={pair[0].x}
+                                                    y1={pair[0].y}
+                                                    x2={pair[1].x}
+                                                    y2={pair[1].y}/>))
+  }
+
   render() {
     console.log('suka');
     const { mode, dispatch, points, adjacencyMatrix } = this.props;
@@ -60,6 +80,8 @@ class App extends Component {
           <svg className="App__field" onClick={(e) => this.handleFieldClick(e)}>
             {points.map( (point, pointKey) => <Point key={pointKey} onClick={this.handlePointClick}
                                          point={point}/>)}
+
+            {this.drawLines(points, adjacencyMatrix)}
           </svg>
 
 
