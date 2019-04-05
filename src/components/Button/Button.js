@@ -4,10 +4,10 @@ import './Button.css';
 
 export const Button = (props) => {
 
-  const { title, className } = props;
+  const { title, className, onClick } = props;
 
   return (
-    <button className={"button " + className}>{title}</button>
+    <button onClick={onClick} className={"button " + className}>{title}</button>
   )
 }
 

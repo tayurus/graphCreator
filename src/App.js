@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from './components';
-
 import './App.css';
 
 class App extends Component {
 
-
   render() {
 
-    const { mode } = this.props;
+    const { mode, dispatch } = this.props;
 
     return (
       <div className="App">
 
         <div className="App__mods-panel">
-          <Button title='Создать точку' className={mode === 'createPoint' ? 'button_active' : ''}/>
-          <Button title='Построить маршрут' className={mode === 'createPath' ? 'button_active' : ''}/>
-          <Button title='Соединить точки' className={mode === 'connectPoints' ? 'button_active' : ''}/>
+          <Button title='Создать точку'
+                  onClick={() => dispatch({type: 'changeMode', mode: 'createPoint'})}
+                  className={mode === 'createPoint' ? 'button_active' : ''}/>
+          <Button title='Построить маршрут'
+                  onClick={() => dispatch({type: 'changeMode', mode: 'createPath'})}
+                  className={mode === 'createPath' ? 'button_active' : ''}/>
+          <Button title='Соединить точки'
+                  onClick={() => dispatch({type: 'changeMode', mode: 'connectPoints'})}
+                  className={mode === 'connectPoints' ? 'button_active' : ''}/>
         </div>
 
       </div>
@@ -27,7 +31,6 @@ class App extends Component {
 
 
 function mapStateToProps(state) {
-  // console.log(state);
   const { mode } = state.modsReducer;
   return {mode};
 }
