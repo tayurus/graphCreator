@@ -1,14 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button } from './components';
+import { Button, Point } from './components';
 import './App.css';
 
 class App extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.handleFieldClick = this.handleFieldClick.bind(this);
+  }
+
+  handleFieldClick(e) {
+    const { dispatch } = this.props;
+
+    var rect = e.target.getBoundingClientRect();
+    var x = e.clientX - rect.left; //x position within the element.
+    var y = e.clientY - rect.top;  //y position within the element.
+    const newPoint = {
+      x, y
+    }
+
+    dispatch({type: 'newPoint', newPoint});
+  }
+
   render() {
 
-    const { mode, dispatch } = this.props;
-
+    const { mode, dispatch, points } = this.props;
     return (
       <div className="App">
 
@@ -24,6 +42,12 @@ class App extends Component {
                   className={mode === 'connectPoints' ? 'button_active' : ''}/>
         </div>
 
+        <svg className="App__field" onClickCapture ={(e) => this.handleFieldClick(e)}>
+
+          {points.map( point => <Point  point={point}/>)}
+
+        </svg>
+
       </div>
     );
   }
@@ -32,7 +56,8 @@ class App extends Component {
 
 function mapStateToProps(state) {
   const { mode } = state.modsReducer;
-  return {mode};
+  const { points } = state.pointsReducer;
+  return {mode, points};
 }
 
 const connectedApp = connect(mapStateToProps, null)(App);
