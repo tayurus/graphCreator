@@ -1,5 +1,14 @@
+.App {
+  padding: 10px;
+}
+
 .App__mods-panel {
   display: flex;
   justify-content: space-around;
-  margin: 50px;
+}
+
+@media (max-width:767px) {
+  .App__mods-panel > * {
+    margin: 5px
+  }
 }
