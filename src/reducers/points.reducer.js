@@ -1,4 +1,4 @@
-import { appendPointToAdjacencyMatrix } from './../helpers';
+import { appendPointToAdjacencyMatrix, getDistanceBetweenTwoPoints } from './../helpers';
 
 const initialState = {
   points: [],
@@ -23,8 +23,11 @@ export const pointsReducer = (state = initialState, action) => {
       if (newSelectedPoints.length === 2) {
         const [first, second] = newSelectedPoints;
         const newAdjacencyMatrix = [...state.adjacencyMatrix];
-        newAdjacencyMatrix[first][second] = 1;
-        newAdjacencyMatrix[second][first] = 1;
+        const firstPoint = state.points[first];
+        const secondPoint = state.points[second];
+        const distance = getDistanceBetweenTwoPoints(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y)
+        newAdjacencyMatrix[first][second] = distance;
+        newAdjacencyMatrix[second][first] = distance;
 
         return {...state,
           selectedPoints:[],

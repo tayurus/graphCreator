@@ -1,0 +1,8 @@
+.adjacencyMatrix {
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.adjacencyMatrix td {
+  border: 1px solid #ccc;
+}

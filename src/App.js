@@ -43,7 +43,7 @@ class App extends Component {
 
     adjacencyMatrix.forEach( (row, rowIndex) => {
       row.forEach( (col, colIndex) => {
-        if (col === 1 && colIndex !== rowIndex) {
+        if (col !== -1 && colIndex !== rowIndex) {
           connectedPointsPairs.push([points[colIndex], points[rowIndex]]);
         }
       })
@@ -58,7 +58,6 @@ class App extends Component {
   }
 
   render() {
-    console.log('suka');
     const { mode, dispatch, points, adjacencyMatrix } = this.props;
     return (
       <div className="App">
@@ -83,7 +82,6 @@ class App extends Component {
 
             {this.drawLines(points, adjacencyMatrix)}
           </svg>
-
 
           <AdjacencyMatrix matrix={adjacencyMatrix}/>
 
