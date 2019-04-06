@@ -1,5 +1,6 @@
 export const createDijkstraPath = (paths, end, adjacencyMatrix) => {
   let newPaths = [];
+  let oldPathsLength = paths.reduce( (acc, path) => path.length );
 
   paths.forEach((path, pathIndex) => {
 
@@ -7,36 +8,38 @@ export const createDijkstraPath = (paths, end, adjacencyMatrix) => {
       const lastPointInVisited = path[path.length - 1];
       for (let i = 0; i < adjacencyMatrix.length; i++) {
         if (adjacencyMatrix[lastPointInVisited.text][i] > 1 && !isPointInPath(path, i)) {
-          newPaths[newPaths.length] = [...paths[pathIndex]];
+          newPaths[newPaths.length] = [...path];
           newPaths[newPaths.length - 1].push({
             text: i,
             distance: adjacencyMatrix[lastPointInVisited.text][i]
           });
         }
       }
+
+    } else {
+      newPaths.push(path);
     }
 
   })
 
-  if (isEndFinded(newPaths, end, adjacencyMatrix)) {
-    console.log(newPaths);
-    return newPaths;
+
+
+  let newPathsLength  = newPaths.reduce( (acc, path) => path.length );
+
+  if (oldPathsLength === newPathsLength) {
+    return newPaths.sort(sortPaths)[0];
   } else {
-    createDijkstraPath(newPaths, end, adjacencyMatrix);
+    return createDijkstraPath(newPaths, end, adjacencyMatrix);
   }
 
+}
+
+function sortPaths(path1,path2) {
+  const path1Length = path1.reduce( (acc, item) => acc + item.distance, 0 );
+  const path2Length = path2.reduce( (acc, item) => acc + item.distance, 0 );
+  return path1Length - path2Length;
 }
 
 const isPointInPath = (path, pointIndex) => {
   return path.some(item => item.text === pointIndex)
 }
-
-const isEndFinded = (paths, end, adjacencyMatrix) => {
-  return paths.every(path => path.length === adjacencyMatrix.length);
-}
-
-// [[{text: 0, distance: 1}]]
-//
-// [{text: 1, distance: 463}, {text: 5, distance: 210}];
-
-// [start, ..., end];

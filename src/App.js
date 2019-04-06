@@ -37,28 +37,33 @@ class App extends Component {
     }
   }
 
-  drawLines(points, adjacencyMatrix){
+  drawLines(points, adjacencyMatrix, color){
 
     let connectedPointsPairs = [];
 
     adjacencyMatrix.forEach( (row, rowIndex) => {
       row.forEach( (col, colIndex) => {
-        if (col !== -1 && colIndex !== rowIndex) {
+        if (col > 1 && colIndex !== rowIndex) {
           connectedPointsPairs.push([points[colIndex], points[rowIndex]]);
         }
       })
     })
 
-    return connectedPointsPairs.map( pair => (<line stroke="red"
-                                                    stroke-width="2"
-                                                    x1={pair[0].x}
-                                                    y1={pair[0].y}
-                                                    x2={pair[1].x}
-                                                    y2={pair[1].y}/>))
+    return connectedPointsPairs.map( (pair, pairKey) => this.drawLine(pair, pairKey, color) );
+  }
+
+  drawLine(pair, pairKey, color) {
+    return (<line key={pairKey}
+           stroke={color}
+           strokeWidth="2"
+           x1={pair[0].x}
+           y1={pair[0].y}
+           x2={pair[1].x}
+           y2={pair[1].y}/>)
   }
 
   render() {
-    const { mode, dispatch, points, adjacencyMatrix } = this.props;
+    const { mode, dispatch, points, adjacencyMatrix, pathPairs } = this.props;
     return (
       <div className="App">
 
@@ -80,7 +85,8 @@ class App extends Component {
             {points.map( (point, pointKey) => <Point key={pointKey} onClick={this.handlePointClick}
                                          point={point}/>)}
 
-            {this.drawLines(points, adjacencyMatrix)}
+            {this.drawLines(points, adjacencyMatrix, 'red')}
+            {pathPairs.map((pair, pairKey) => this.drawLine(pair, pairKey, 'limegreen'))}
           </svg>
 
           <AdjacencyMatrix matrix={adjacencyMatrix}/>
@@ -93,13 +99,13 @@ class App extends Component {
     );
   }
 }
-
+// {this.drawLines(path, adjacencyMatrix, 'limegreen')}
 
 function mapStateToProps(state) {
   const { mode } = state.modsReducer;
-  const { points, adjacencyMatrix } = state.pointsReducer;
+  const { points, adjacencyMatrix, pathPairs } = state.pointsReducer;
 
-  return {mode, points, adjacencyMatrix};
+  return {mode, points, adjacencyMatrix, pathPairs};
 }
 
 const connectedApp = connect(mapStateToProps, null)(App);
