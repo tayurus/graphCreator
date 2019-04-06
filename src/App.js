@@ -32,8 +32,8 @@ class App extends Component {
 
     const { mode, dispatch } = this.props;
 
-    if (mode === 'connectPoints') {
-      dispatch({type: 'selectPoint', pointText: parseInt(e.target.getAttribute('data-text'))});
+    if (mode === 'connectPoints' || mode === 'createPath') {
+      dispatch({type: 'selectPoint', pointText: parseInt(e.target.getAttribute('data-text')), mode: mode});
     }
   }
 

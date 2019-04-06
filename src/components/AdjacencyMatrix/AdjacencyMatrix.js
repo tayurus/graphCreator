@@ -5,7 +5,6 @@ export const AdjacencyMatrix = props => {
   const { matrix } = props;
 
   const thRow = new Array(matrix.length).fill(0);
-  console.log(thRow);
   return (
     <table className="adjacencyMatrix">
       <thead>

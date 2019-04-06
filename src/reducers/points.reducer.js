@@ -1,41 +1,64 @@
-import { appendPointToAdjacencyMatrix, getDistanceBetweenTwoPoints } from './../helpers';
+import { appendPointToAdjacencyMatrix, getDistanceBetweenTwoPoints, createDijkstraPath } from './../helpers';
 
 const initialState = {
-  points: [],
+  points: [{x: 231, y: 97, text: 0},
+{x: 600, y: 543, text: 1},
+{x: 807, y: 308, text: 2}],
   selectedPoints: [],
-  adjacencyMatrix: []
+  adjacencyMatrix: [
+    [1, 579, -1],
+    [579, 1, 313],
+    [-1, 313, 1]
+  ]
 }
 
 export const pointsReducer = (state = initialState, action) => {
+
+  const { points, adjacencyMatrix, selectedPoints } =  state;
+  const { mode } = action;
+
   switch (action.type) {
     case 'newPoint':
       let newPoint = {...action.newPoint};
-      newPoint.text = state.points.length;
+      newPoint.text = points.length;
       return {...state,
-              points: [...state.points, newPoint],
-              adjacencyMatrix: appendPointToAdjacencyMatrix(state.adjacencyMatrix)
+              points: [...points, newPoint],
+              adjacencyMatrix: appendPointToAdjacencyMatrix(adjacencyMatrix)
              }
 
     case 'selectPoint':
-      let newSelectedPoints = [...state.selectedPoints];
+
+      let newSelectedPoints = [...selectedPoints];
       newSelectedPoints.push(action.pointText);
 
-      if (newSelectedPoints.length === 2) {
-        const [first, second] = newSelectedPoints;
-        const newAdjacencyMatrix = [...state.adjacencyMatrix];
-        const firstPoint = state.points[first];
-        const secondPoint = state.points[second];
-        const distance = getDistanceBetweenTwoPoints(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y)
-        newAdjacencyMatrix[first][second] = distance;
-        newAdjacencyMatrix[second][first] = distance;
+      if (action.mode === 'connectPoints') {
 
-        return {...state,
-          selectedPoints:[],
-          adjacencyMatrix: newAdjacencyMatrix
-         }
+        if (newSelectedPoints.length === 2) {
+          const [first, second] = newSelectedPoints;
+          const newAdjacencyMatrix = [...adjacencyMatrix];
+          const firstPoint = points[first];
+          const secondPoint = points[second];
+          const distance = getDistanceBetweenTwoPoints(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y)
+          newAdjacencyMatrix[first][second] = distance;
+          newAdjacencyMatrix[second][first] = distance;
+
+          return {...state,
+            selectedPoints:[],
+            adjacencyMatrix: newAdjacencyMatrix
+           }
+        }
+
+      }
+
+      else if (mode === 'createPath') {
+        if (newSelectedPoints.length === 2) {
+          createDijkstraPath([[{ text: newSelectedPoints[0], distance: 1}]], newSelectedPoints[1], adjacencyMatrix);
+        }
       }
 
       return {...state, selectedPoints: newSelectedPoints}
+
+
 
 
     default:
